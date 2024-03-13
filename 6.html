@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thuật toán Kruskal</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vis-network@7.12.0/dist/vis-network.min.js"></script>
+<style>
+    /* Định dạng cho phần kết quả */
+    #result {
+        margin-top: 20px;
+    }
+    #result h2 {
+        margin-top: 20px;
+    }
+    #result p {
+        margin-bottom: 5px;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Thuật toán Kruskal</h1>
+    <div class="form-group">
+        <label for="graph">Nhập đồ thị dưới dạng ma trận:</label>
+        <textarea id="graph" class="form-control" rows="5" cols="50">0 4 2 0 0
+4 0 5 0 0
+2 5 0 8 0
+0 0 8 0 3
+0 0 0 3 0</textarea>
+    </div>
+    <button onclick="runKruskal()" class="btn btn-primary">Chạy Kruskal</button>
+    <div id="result"></div>
+    <div id="network" class="mt-3"></div>
+</div>
+
+<script>
+function kruskal(graph) {
+    const n = graph.length;
+    const edges = [];
+
+    for (let i = 0; i < n; i++) {
+        for (let j = i + 1; j < n; j++) {
+            if (graph[i][j] !== 0) {
+                edges.push([i, j, graph[i][j]]);
+            }
+        }
+    }
+
+    edges.sort((a, b) => a[2] - b[2]);
+
+    const parent = new Array(n).fill(-1);
+    const result = [];
+
+    function find(u) {
+        if (parent[u] === -1) return u;
+        return find(parent[u]);
+    }
+
+    function union(u, v) {
+        const rootU = find(u);
+        const rootV = find(v);
+        parent[rootU] = rootV;
+    }
+
+    let edgeCount = 0;
+    let i = 0;
+    while (edgeCount < n - 1) {
+        const [u, v, weight] = edges[i++];
+        const rootU = find(u);
+        const rootV = find(v);
+        if (rootU !== rootV) {
+            result.push([u, v, weight]);
+            union(u, v);
+            edgeCount++;
+        }
+    }
+
+    return result;
+}
+
+function runKruskal() {
+    const input = document.getElementById("graph").value;
+    const graph = input.split("\n").map(row => row.split(" ").map(Number));
+    const result = kruskal(graph);
+    
+    let output = "<h2>Kết quả Kruskal:</h2>";
+    const minSpanningTree = [];
+    let totalWeight = 0;
+
+    for (let i = 0; i < result.length; i++) {
+        const [u, v, weight] = result[i];
+        minSpanningTree.push([u, v]);
+        totalWeight += weight;
+    }
+
+    output += "<p>Cây khung nhỏ nhất: ";
+    for (let j = 0; j < minSpanningTree.length; j++) {
+        output += "(" + minSpanningTree[j][0] + ", " + minSpanningTree[j][1] + ") ";
+    }
+    output += "- Trọng số: " + totalWeight + "</p>";
+    
+    document.getElementById("result").innerHTML = output;
+    
+    const container = document.getElementById("network");
+    const nodes = new vis.DataSet(
+        new Array(graph.length).fill().map((_, idx) => ({id: idx, label: String(idx)}))
+    );
+    const edges = new vis.DataSet(minSpanningTree.map(edge => ({from: edge[0], to: edge[1]})));
+    const data = {nodes, edges};
+    const options = {};
+    new vis.Network(container, data, options);
+}
+</script>
+</body>
+</html>

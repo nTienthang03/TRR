@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bài toán đóng thùng</title>
+</head>
+<body>
+<h1>Bài toán đóng thùng</h1>
+<div>
+    <label for="n">Nhập số lượng đồ vật :</label>
+    <input type="number" id="n" min="1">
+</div>
+<div>
+    <label for="b">Nhập dung tích của thùng :</label>
+    <input type="number" id="b" min="1">
+</div>
+<div>
+    <label for="weights">Nhập trọng lượng của từng đồ vật (cách nhau bằng dấu phẩy):</label>
+    <input type="text" id="weights">
+</div>
+<button onclick="solve()">Giải</button>
+<div id="result"></div>
+
+<script>
+function solve() {
+    var n = parseInt(document.getElementById("n").value);
+    var b = parseInt(document.getElementById("b").value);
+    var weightsInput = document.getElementById("weights").value;
+    var weights = weightsInput.split(",").map(function(item) {
+        return parseInt(item.trim());
+    });
+
+    // Lọc ra các đồ vật có trọng lượng nhỏ hơn hoặc bằng dung tích của thùng
+    weights = weights.filter(weight => weight <= b);
+
+    weights.sort((a, b) => b - a); // Sắp xếp các đồ vật theo trọng lượng giảm dần
+
+    var bins = [b]; // Mảng lưu trữ dung lượng còn lại của các thùng
+
+    for (var i = 0; i < weights.length; i++) {
+        var j;
+        for (j = 0; j < bins.length; j++) {
+            if (weights[i] <= bins[j]) {
+                bins[j] -= weights[i];
+                break;
+            }
+        }
+        if (j === bins.length) { // Nếu không thể đặt vào các thùng hiện có, tạo thêm một thùng mới
+            bins.push(b - weights[i]);
+        }
+    }
+
+    document.getElementById("result").innerText = "Số lượng thùng cần sử dụng là: " + bins.length;
+}
+</script>
+</body>
+</html>

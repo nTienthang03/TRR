@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Giải bài tập lục giác thần bí </title>
+<script>
+const n = 19;
+var x = []; // khai báo mảng X
+var m = []; // mảng đánh dấu những số đã dùng
+var stt;
+
+function init() {
+  for (var i = 1; i <= n; i++) {
+    m[i] = 0; //chưa dùng ô thứ i
+    x[i] = 0; //ô thứ i: chưa điền số nào
+  }
+  stt = 0;
+}
+
+function f(i) {
+  for (var so = 1; so <= n; so++) {
+    if (m[so] == 0) { // chưa dùng
+      x[i] = so; //điền vào ô i giá trị so
+      m[so] = 1; //đánh dấu đã dùng nó
+      if (check_ok(i)) {
+        if (i == n)
+          show_kq();
+        else
+          f(i + 1);
+      }
+      x[i] = 0;
+      m[so] = 0;
+    }
+  }
+}
+const v = [
+  [9, 10, 11],
+  [8, 12, 17, 18],
+  [1, 7, 13, 16, 19],
+  [2, 6, 14, 15],
+  [3, 4, 5],
+  [1, 2, 3],
+  [4, 12, 13, 14],
+  [5, 11, 15, 18, 19],
+  [6, 10, 16, 17],
+  [7, 8, 9],
+  [1, 11, 12],
+  [2, 10, 13, 18],
+  [3, 9, 14, 17, 19],
+  [4, 8, 15, 16],
+  [5, 6, 7],
+];
+
+function check_ok(k) {
+  for (var mang of v) {
+    var sum = 0,
+      isFull = 1;
+    for (var i of mang) {
+      if (i <= k) {
+        sum += x[i];
+        if (x[i] == 0) isFull = 0;
+      } else {
+        isFull = 0;
+      }
+    }
+    //console.log([k,mang,isFull,sum])
+    if (sum > 38) return false;
+    if (isFull) {
+      if (sum != 38) return false;
+    } else if (sum >= 38) return false;
+  }
+  return true;
+}
+
+function show_kq() {
+  var loigiai = 'Nghiệm thứ ' + ++stt + ': ';
+  for (var i = 1; i <= n; i++) loigiai += x[i] + ', ';
+  document.getElementById('ketqua').innerHTML += loigiai + '<br>';
+  if (stt == 7) {
+    for (var i = 1; i <= n; i++) document.getElementById('v' + i).innerHTML = x[i];
+  }
+}
+
+function giai() {
+  init();
+  f(1); //bắt đầu tìm xem x[1] điền cái gì
+}
+</script>
+<style>
+.cell {
+  width: 30px;
+  height: 20px;
+  text-align: center;
+  font-size: 40px;
+}
+</style>
+</head>
+<body style="cursor: auto">
+<h3>Giải bài tập lục giác thần bí:</h3>
+<button onclick="giai()">Nhấn để giải bài tập</button>
+
+<div id="ketqua"></div>
+</body>
+</html>

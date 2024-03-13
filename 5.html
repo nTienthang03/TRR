@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biểu diễn DFS</title>
+    <style>
+        #container {
+            width: 600px;
+            height: 400px;
+            border: 1px solid #ccc;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+</head>
+<body>
+    <h2>Biểu diễn DFS</h2>
+    <div id="container"></div>
+    <script>
+        const graph = {
+            1: [2, 3],
+            2: [4, 5],
+            3: [],
+            4: [],
+            5: []
+        };
+
+        function DFS(node, visited, nodes, edges) {
+            if (!visited[node]) {
+                console.log("Đã thăm đỉnh:", node);
+                visited[node] = true;
+                nodes.add({ id: node, label: String(node) });
+                graph[node].forEach(neighbor => {
+                    edges.add({ from: node, to: neighbor });
+                    DFS(neighbor, visited, nodes, edges);
+                });
+            }
+        }
+
+        const nodes = new vis.DataSet();
+        const edges = new vis.DataSet();
+
+        const container = document.getElementById("container");
+        const data = {
+            nodes: nodes,
+            edges: edges
+        };
+        const options = {};
+
+        const network = new vis.Network(container, data, options);
+
+        const visited = {};
+        DFS(1, visited, nodes, edges);
+    </script>
+</body>
+</html>

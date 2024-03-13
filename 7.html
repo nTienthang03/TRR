@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thuật toán Dijkstra</title>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h1 class="mt-5">Thuật toán Dijkstra</h1>
+    <div>
+        <label for="graph">Nhập đồ thị dưới dạng ma trận:</label>
+        <textarea id="graph" class="form-control" rows="5" cols="50">0 4 2 0 0
+4 0 5 0 0
+2 5 0 8 0
+0 0 8 0 3
+0 0 0 3 0</textarea>
+    </div>
+    <button onclick="runDijkstra()" class="btn btn-primary mt-3">Chạy Dijkstra</button>
+    <div id="result" class="mt-3"></div>
+</div>
+
+<script>
+function dijkstra(graph, start) {
+    const distances = {};
+    const visited = {};
+    const queue = [];
+
+    for (let vertex in graph) {
+        distances[vertex] = Infinity;
+    }
+    distances[start] = 0;
+
+    queue.push({ node: start, weight: 0 });
+
+    while (queue.length) {
+        const { node, weight } = queue.shift();
+
+        visited[node] = true;
+
+        for (let neighbor of graph[node]) {
+            if (!visited[neighbor.node] && distances[neighbor.node] > distances[node] + neighbor.weight) {
+                distances[neighbor.node] = distances[node] + neighbor.weight;
+                queue.push({ node: neighbor.node, weight: distances[neighbor.node] });
+            }
+        }
+    }
+
+    return distances;
+}
+
+function runDijkstra() {
+    const input = document.getElementById("graph").value;
+    const rows = input.trim().split("\n");
+    const graph = {};
+    for (let i = 0; i < rows.length; i++) {
+        const cols = rows[i].trim().split(" ").map(Number);
+        graph[i] = [];
+        for (let j = 0; j < cols.length; j++) {
+            if (cols[j] !== 0) {
+                graph[i].push({ node: j, weight: cols[j] });
+            }
+        }
+    }
+
+    const startVertex = 0;
+    const shortestDistances = dijkstra(graph, startVertex);
+
+    let output = "<h2 class='mt-3'>Độ dài đường đi ngắn nhất từ đỉnh " + startVertex + ":</h2>";
+    for (let vertex in shortestDistances) {
+        output += "<p>Đỉnh " + vertex + ": " + shortestDistances[vertex] + "</p>";
+    }
+
+    document.getElementById("result").innerHTML = output;
+}
+</script>
+</body>
+</html>

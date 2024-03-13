@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đếm Cách Chọn Nhóm</title>
+</head>
+<body>
+    <h1>Đếm Cách Chọn Nhóm</h1>
+    <p id="result"></p>
+
+    <script>
+        // Định nghĩa hàm combination và countWaysToChooseGroup
+        function combination(n, k) {
+            let numerator = 1;
+            for (let i = n; i > n - k; i--) {
+                numerator *= i;
+            }
+            let denominator = 1;
+            for (let i = 1; i <= k; i++) {
+                denominator *= i;
+            }
+            return numerator / denominator;
+        }
+
+        function countWaysToChooseGroup() {
+            const soNam = 8;
+            const soNu = 5;
+            const soNamCan = 3;
+            const soNuCan = 2;
+
+            const cachChonNam = combination(soNam, soNamCan);
+            const cachChonNu = combination(soNu, soNuCan);
+            
+            return cachChonNam * cachChonNu;
+        }
+
+        // Gọi hàm và hiển thị kết quả
+        const ketQua = countWaysToChooseGroup();
+        document.getElementById('result').innerText = "Số cách chọn nhóm: " + ketQua;
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trình tạo tập hợp con</title>
+    <script>
+        function subsetsOfSizeK(arr, k) {
+            const result = [];
+
+            function generateSubsets(curr, start, k) {
+                if (curr.length === k) {
+                    result.push(curr.slice());
+                    return;
+                }
+                for (let i = start; i < arr.length; i++) {
+                    curr.push(arr[i]);
+                    generateSubsets(curr, i + 1, k);
+                    curr.pop();
+                }
+            }
+
+            generateSubsets([], 0, k);
+            return result;
+        }
+
+        function hienThiTapHopCon() {
+            const originalSet = [1, 2, 3];
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = "";
+
+            for (let k = 0; k <= originalSet.length; k++) {
+                const subsets = subsetsOfSizeK(originalSet, k);
+                outputDiv.innerHTML += `<p>Tất cả các tập hợp con có kích thước ${k}: ${JSON.stringify(subsets)}</p>`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Trình tạo tập hợp con</h1>
+    <button onclick="hienThiTapHopCon()">Tạo Tập Hợp Con</button>
+    <div id="output"></div>
+</body>
+</html>
